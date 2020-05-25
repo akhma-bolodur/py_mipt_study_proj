@@ -7,7 +7,7 @@ import hashlib
 from app import my_widget
 
 from PyQt5.QtWidgets import (
-    QApplication, QLabel, QListWidgetItem, QFileDialog, QWidget
+    QApplication, QLabel, QListWidgetItem, QFileDialog, QWidget, QLineEdit
 )
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
@@ -22,6 +22,7 @@ class Login(Form):
 
         self.ui = ui = FormUI()
         ui.setupUi(self)
+        ui.password.setEchoMode (QLineEdit.Password)
         ui.pushButton.clicked.connect (self.__authentificate)
 
         self.dbc = db.connect('my_db.s3db')
@@ -91,8 +92,12 @@ class Login(Form):
                         status.setText ('<span style="color: red;">' + 
                                'Failed auth: wrong password</span>')
                         return
+        return
 
-        return   
+    def keyPressEvent (self, event):
+        key = event.key ()
+        if key == Qt.Key_Enter or key == Qt.Key_Return:
+            self.__authentificate ()
 
 
 def main():
