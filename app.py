@@ -15,7 +15,7 @@ TABLENAME = 'students'
 TAXES = 0.13
 FormUI, Form = uic.loadUiType('mataid.ui')
 
-class my_widget(QWidget):
+class my_widget(Form):
 	def __init__(self, parent=None):
 		print("constructor")
 		super().__init__()
@@ -94,6 +94,7 @@ class my_widget(QWidget):
 		query_result_list = self.ui.query_result_list
 		query_result_list.addItem(list_item)
 		query_result_list.setItemWidget(list_item, label)
+		query_result_list.scrollToItem(list_item)
 
 	def __show(self):
 		print("show")
@@ -142,8 +143,7 @@ class my_widget(QWidget):
 def main():
 	app = QApplication(sys.argv)
 	wid = my_widget()
-	window = uic.loadUi("mataid.ui", wid)
-	window.show()
+	wid.show()
 	sys.exit(app.exec_())
 
 
