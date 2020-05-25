@@ -44,7 +44,6 @@ class Login(Form):
             return
         
         query_text = f'SELECT * FROM auth WHERE login = "{login_text}";'
-        print (query_text)
         # Try to execute query
         try:
             cur = self.dbc.cursor ()
@@ -85,7 +84,8 @@ class Login(Form):
                         status.setText ('<span style="color: green;">' + 
                                'Successfully auth</span>')
                     
-                        self.close ()
+                        self.wid = my_widget ()
+                        self.wid.show ()
                         return
                     else:
                         status.setText ('<span style="color: red;">' + 
@@ -93,6 +93,7 @@ class Login(Form):
                         return
 
         return   
+
 
 def main():
     app = QApplication(sys.argv)
