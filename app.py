@@ -2,6 +2,7 @@
 
 import sys
 import sqlite3 as db
+import functools
 
 from PyQt5.QtWidgets import (
 	QApplication, QLabel, QListWidgetItem, QFileDialog, QWidget
@@ -21,6 +22,8 @@ class my_widget(QWidget):
 		self.ui.button_show.clicked.connect(self.__show)
 		self.ui.button_appoint_aid.clicked.connect(self.__appoint_aid)
 		self.ui.aid_summ.setMaximum(100000.00)
+		self.max_persons1 = int(self.ui.persons_1.text())
+		self.max_persons2 = int(self.ui.persons_2.text())
 		self.dbc = db.connect('my_db.s3db')
 
 	def __del__(self):
@@ -35,33 +38,49 @@ class my_widget(QWidget):
 		group_number = self.ui.group_number.text().strip()
 		department = self.ui.department.text().strip()
 		course_number = self.ui.course_number.text().strip()
+		school_number = self.ui.school_number.text().strip()
 		full_name = self.ui.full_name.text().strip()
-		if group_number + department + course_number + full_name != '':
+		names = full_name.split(' ')
+		names = [names[i] if i < len(names) else '' for i in range(3)]
+		last_name, first_name, second_name = names
+		query_parameters = [
+			['group_num', group_number], 
+			['department', department],
+			['course_num', course_number],
+			['school_num', school_number],
+			['lastname', last_name],
+			['first_name', first_name],
+			['second_name', second_name]]
+
+		if functools.reduce(lambda a, b: a + b, query_parameters) != '':
 			query_text += ' WHERE'
-			if group_number != '':
-				query_text += f' group_num = {group_number} and'
-			if department != '':
-				query_text += f' department = {department} and'
-			if course_number != '':
-				query_text += f' course_num = {course_number} and'
-			if full_name != '':
-				last_name, first_name, second_name = full_name.split(' ')
-				query_text += f' lastname = "{last_name}" and first_name = "{first_name}" and second_name = "{second_name}" and'
-			query_text = query_text[:-4]
-			print(query_text)
+			for column_name, value in query_parameters:
+				if value != '':
+					c = ''
+					if column_name == 'lastname' or column_name == 'first_name' or column_name == 'second_name':
+						c = '"'
+					query_text += ' ' + column_name + ' = ' + c + f'{value}' + c + '  and'
+			query_text = query_text[:-len(' and')]
 		# Try to execute query
 		try:
+			max_p = 'all'
+			if self.ui.persons_1.isChecked():
+				max_p = self.max_persons1
+			elif self.ui.persons_2.isChecked():
+				max_p = self.max_persons2
 			cur = self.dbc.cursor()
 			cur.execute(query_text)
 			self.dbc.commit()
-			result = cur.fetchall()
+			result = cur.fetchall() if max_p == 'all' else cur.fetchmany(max_p)
 			error = None
 		except Exception as exc:
 			result = None
 			error = str(exc)
 		# Display result or error
 		if error is None:
-			if cur.description is not None:
+			if cur.description is None:
+				result_text = f'<span style="color: green;"><b>No students</b></span>'
+			else:
 				result_text = '<table border=1>'
 				result_text += '<tr>'
 				for column_name, *_ in cur.description:
