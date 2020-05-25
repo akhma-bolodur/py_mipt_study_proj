@@ -111,7 +111,7 @@
     </widget>
    </item>
    <item row="4" column="0" colspan="7">
-    <widget class="QListWidget" name="query_result"/>
+    <widget class="QListWidget" name="query_result_list"/>
    </item>
    <item row="3" column="2">
     <widget class="QLineEdit" name="school_number"/>
