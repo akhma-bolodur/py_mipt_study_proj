@@ -4,6 +4,7 @@ import sys
 import sqlite3 as db
 
 import hashlib
+from app import my_widget
 
 from PyQt5.QtWidgets import (
     QApplication, QLabel, QListWidgetItem, QFileDialog, QWidget
@@ -35,14 +36,15 @@ class Login(Form):
         login = self.ui.login
         passw = self.ui.password
         login_text = login.text().strip()
-        passw_text = login.text().strip()
+        passw_text = passw.text().strip()
         status = self.ui.status_label
-        if (login_text is '') or (passw_text is ''):
+        if login_text == '' or passw_text == '':
             status.setText ('<span style="color: red;">' + 
                     'Error: login or password is empty</span>')
             return
         
-        query_text = f'SELECT * FROM auth WHERE login = {login}'
+        query_text = f'SELECT * FROM auth WHERE login = "{login_text}";'
+        print (query_text)
         # Try to execute query
         try:
             cur = self.dbc.cursor ()
@@ -54,6 +56,7 @@ class Login(Form):
             result = None
             error = str (exc)
         if error is not None:
+            print (error)
             status.setText ('<span style="color: red;">' + 
                    f'Error: {error}</span>')
             return  
@@ -67,15 +70,22 @@ class Login(Form):
                     status.setText ('<span style="color: red;">' + 
                            f'Error: dublicated login {login_text}</span>')
                     return
+                elif len (result) == 0:
+                    status.setText ('<span style="color: red;">' + 
+                           f'Failed auth: unknown login {login_text}</span>')
+                    
+                    return
+
                 else:
-                    print (result[0])
                     salt = result[0][2]
                     dk = hashlib.pbkdf2_hmac ('sha512', 
-                            bytes (login_text, 'utf-8'), salt, 100000)
-                    if (dk.hex () != result[0][1]):
+                            bytes (passw_text, 'utf-8'), salt, 100000)
+                    if (dk  == result[0][1]):
                         print ('Success auth')
                         status.setText ('<span style="color: green;">' + 
                                'Successfully auth</span>')
+                    
+                        self.close ()
                         return
                     else:
                         status.setText ('<span style="color: red;">' + 
