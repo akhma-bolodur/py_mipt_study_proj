@@ -23,52 +23,6 @@
    <item row="1" column="3">
     <widget class="QLineEdit" name="full_name"/>
    </item>
-   <item row="2" column="3" rowspan="2">
-    <widget class="QGroupBox" name="max_persons">
-     <property name="title">
-      <string>Not more than</string>
-     </property>
-     <widget class="QRadioButton" name="persons_1">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>44</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>25</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="persons_2">
-      <property name="geometry">
-       <rect>
-        <x>70</x>
-        <y>30</y>
-        <width>44</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>50</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="persons_all">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
-        <y>30</y>
-        <width>43</width>
-        <height>29</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>all</string>
-      </property>
-     </widget>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLineEdit" name="group_number"/>
    </item>
@@ -142,6 +96,52 @@
    </item>
    <item row="3" column="4">
     <widget class="QDoubleSpinBox" name="aid_summ"/>
+   </item>
+   <item row="2" column="3" rowspan="2">
+    <widget class="QGroupBox" name="max_persons">
+     <property name="title">
+      <string>Not more than</string>
+     </property>
+     <widget class="QRadioButton" name="persons_1">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>44</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>25</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="persons_2">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>30</y>
+        <width>44</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>50</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>30</y>
+        <width>51</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>100</string>
+      </property>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>

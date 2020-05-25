@@ -105,7 +105,7 @@ class my_widget(Form):
 
 		# Try to execute query
 		try:
-			max_p = 'all'
+			max_p = 100
 			if self.ui.persons_1.isChecked():
 				max_p = self.max_persons1
 			elif self.ui.persons_2.isChecked():
@@ -113,7 +113,7 @@ class my_widget(Form):
 			cur = self.dbc.cursor()
 			cur.execute(query_text)
 			self.dbc.commit()
-			result = cur.fetchall() if max_p == 'all' else cur.fetchmany(max_p)
+			result = cur.fetchmany(max_p)
 			error = None
 		except Exception as exc:
 			result = None
