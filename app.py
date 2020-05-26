@@ -21,12 +21,15 @@ class my_widget(Form):
 	def __init__(self, course_num, school_num, parent=None):
 		print("constructor")
 		super().__init__()
+
 		self.ui = ui = FormUI()
 		ui.setupUi(self)
 		self.ui.button_show.clicked.connect(self.__show)
 		self.ui.button_appoint_aid.clicked.connect(self.__appoint_aid)
 		self.ui.aid_summ.setMaximum(100000.00)
 		self.ui.aid_summ.setMinimum(-100000.00)
+		self.setWindowTitle ('App')
+
 		self.max_persons1 = int(self.ui.persons_1.text())
 		self.max_persons2 = int(self.ui.persons_2.text())
 		self.dbc = db.connect('my_db.s3db')
@@ -48,19 +51,20 @@ class my_widget(Form):
 		full_name = self.ui.full_name.text().strip()
 		names = full_name.split(' ')
 
-		
+		# print (course_number, school_number)
 		if self.course_num > 0 or self.school_num > 0:
 			if self.course_num != int(course_number if course_number is not '' else '0'):
 				self.access_err = ('<span style="color: red;"><b>' + 
 					f'Access denied: your course number is {self.course_num}' + 
 					'</b></span>')
-				print (self.access_err)
+				# print (self.access_err)
 				return ''
 			elif self.school_num != int(school_number if school_number is not '' else '0'):
+				# print (self.school_num, school_number if school_number is not '' else '0')
 				self.access_err = ('<span style="color: red;"><b>' + 
 					f'Access denied: your school number is {self.school_num}' + 
 					'</b></span>')
-				print (self.access_err)
+				# print (self.access_err)
 				return ''
 		
 
@@ -131,6 +135,7 @@ class my_widget(Form):
 		query_text += self.__params_to_where() + ' ORDER BY lastname ASC'
 		if self.access_err is not '':
 			self.__print_res (self.access_err)
+			self.access_err = ''
 			return
 
 		# Try to execute query

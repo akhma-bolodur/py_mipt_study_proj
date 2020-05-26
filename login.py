@@ -11,19 +11,25 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
+from PyQt5 import QtCore 
 
 DB_PATH = 'my_db.s3db'
 FormUI, Form = uic.loadUiType('login.ui')
 
 class Login(Form):
+    
+    switch_to_app = QtCore.pyqtSignal (int, int)
+
     def __init__(self, parent=None):
         print("login constructor")
         super().__init__()
-
+        
         self.ui = ui = FormUI()
+        # self.ui.setWindowTitle ('Authentification')
         ui.setupUi(self)
         ui.password.setEchoMode (QLineEdit.Password)
         ui.pushButton.clicked.connect (self.__authentificate)
+        self.setWindowTitle ('Authentification')
 
         self.dbc = db.connect('my_db.s3db')
 
@@ -44,11 +50,11 @@ class Login(Form):
                     'Error: login or password is empty</span>')
             return
         
-        query_text = f'SELECT * FROM auth WHERE login = "{login_text}";'
+        query_text = 'SELECT * FROM auth WHERE login = ?;'
         # Try to execute query
         try:
             cur = self.dbc.cursor ()
-            cur.execute (query_text)
+            cur.execute (query_text, (login_text, ))
             self.dbc.commit ()
             result = cur.fetchall ()
             error = None
@@ -85,9 +91,10 @@ class Login(Form):
                         status.setText ('<span style="color: green;">' + 
                                'Successfully auth</span>')
                     
-                        self.wid = my_widget (course_num = result[0][3], 
-                                              school_num = result[0][4])
-                        self.wid.show ()
+                        # self.wid = my_widget (course_num = result[0][3], 
+                        #                      school_num = result[0][4])
+                        # self.wid.show ()
+                        self.switch_to_app.emit (result[0][3], result[0][4])
                         return
                     else:
                         status.setText ('<span style="color: red;">' + 
@@ -100,11 +107,21 @@ class Login(Form):
         if key == Qt.Key_Enter or key == Qt.Key_Return:
             self.__authentificate ()
 
+class Control:
+    def _login (self):
+        self.login = Login ()
+        self.login.switch_to_app.connect (self.__app)
+        self.login.show ()
+
+    def __app (self, c_num, s_num):
+        self.app = my_widget (course_num = c_num, school_num = s_num)
+        self.login.close ()
+        self.app.show ()
 
 def main():
     app = QApplication(sys.argv)
-    login = Login()
-    login.show()
+    control = Control ()
+    control._login ()
     sys.exit(app.exec_())
 
 
