@@ -5,7 +5,7 @@ import sqlite3 as db
 import functools
 
 from PyQt5.QtWidgets import (
-	QApplication, QLabel, QListWidgetItem, QFileDialog, QWidget
+	QApplication, QLabel, QListWidgetItem, QFileDialog, QWidget, QDialog
 )
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
@@ -13,6 +13,7 @@ from PyQt5 import uic
 DB_PATH = 'my_db.s3db'
 TABLENAME = 'students'
 TAXES = 0.13
+
 FormUI, Form = uic.loadUiType('mataid.ui')
 
 class my_widget(Form):
@@ -134,15 +135,26 @@ class my_widget(Form):
 
 		# Try to execute query
 		try:
-			max_p = 100
 			if self.ui.persons_1.isChecked():
-				max_p = self.max_persons1
+				query_text += f' LIMIT {self.max_persons1}'
 			elif self.ui.persons_2.isChecked():
-				max_p = self.max_persons2
+				query_text += f' LIMIT {self.max_persons2}'
+
 			cur = self.dbc.cursor()
 			cur.execute(query_text)
 			self.dbc.commit()
-			result = cur.fetchmany(max_p)
+			result = cur.fetchall()
+			max_persons = 100
+			if (len(result) > max_persons):
+				dialog = QDialog()
+				DialogFormUI, _ = uic.loadUiType('dialog.ui')
+				dialog.ui = DialogFormUI()
+				dialog.ui.setupUi(dialog)
+				dialog.setWindowTitle('Warning')
+				dialog.ui.button_all.clicked.connect(dialog.accept)
+				dialog.ui.button_not_all.clicked.connect(dialog.reject)
+				if dialog.exec() == 0:
+					result = result[:max_persons]
 			error = None
 		except Exception as exc:
 			result = None
@@ -168,6 +180,13 @@ class my_widget(Form):
 		# Display result or error
 		self.__show()
 		#self.__make_list_widget_table(cur, result, error)
+
+	def __show_all(self):
+		print("show all")
+		self.close()
+
+	def __show_not_all(self):
+		print("show not all")
 
 
 def main():
