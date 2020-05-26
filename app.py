@@ -16,7 +16,8 @@ TAXES = 0.13
 FormUI, Form = uic.loadUiType('mataid.ui')
 
 class my_widget(Form):
-	def __init__(self, parent=None):
+	
+	def __init__(self, course_num, school_num, parent=None):
 		print("constructor")
 		super().__init__()
 		self.ui = ui = FormUI()
@@ -28,10 +29,15 @@ class my_widget(Form):
 		self.max_persons1 = int(self.ui.persons_1.text())
 		self.max_persons2 = int(self.ui.persons_2.text())
 		self.dbc = db.connect('my_db.s3db')
+		self.course_num = course_num
+		self.school_num = school_num
+		self.access_err = ''
 
 	def __del__(self):
 		print("destructor")
 		self.ui = None
+		if self.dbc is not None:
+			self.dbc.close ()
 
 	def __params_to_where(self):
 		group_number = self.ui.group_number.text().strip()
@@ -40,6 +46,23 @@ class my_widget(Form):
 		school_number = self.ui.school_number.text().strip()
 		full_name = self.ui.full_name.text().strip()
 		names = full_name.split(' ')
+
+		
+		if self.course_num > 0 or self.school_num > 0:
+			if self.course_num != int(course_number if course_number is not '' else '0'):
+				self.access_err = ('<span style="color: red;"><b>' + 
+					f'Access denied: your course number is {self.course_num}' + 
+					'</b></span>')
+				print (self.access_err)
+				return ''
+			elif self.school_num != int(school_number if school_number is not '' else '0'):
+				self.access_err = ('<span style="color: red;"><b>' + 
+					f'Access denied: your school number is {self.school_num}' + 
+					'</b></span>')
+				print (self.access_err)
+				return ''
+		
+
 		last_name, first_name, second_name = [names[i] if i < len(names) else '' for i in range(3)]
 		query_parameters = [
 			['group_num', group_number], 
@@ -83,6 +106,9 @@ class my_widget(Form):
 		else:
 			result_text = f'<span style="color: red;"><b>{error}</b></span>'
 		cur.close()
+		self.__print_res (result_text)
+
+	def __print_res (self, result_text):	
 		# Create widgets for a new list item
 		label = QLabel(result_text)
 		list_item = QListWidgetItem()
@@ -102,6 +128,9 @@ class my_widget(Form):
 		query_text = 'SELECT * FROM ' + TABLENAME
 		# Query expansion
 		query_text += self.__params_to_where() + ' ORDER BY lastname ASC'
+		if self.access_err is not '':
+			self.__print_res (self.access_err)
+			return
 
 		# Try to execute query
 		try:
@@ -140,9 +169,10 @@ class my_widget(Form):
 		self.__show()
 		#self.__make_list_widget_table(cur, result, error)
 
+
 def main():
 	app = QApplication(sys.argv)
-	wid = my_widget()
+	wid = my_widget(0, 0)
 	wid.show()
 	sys.exit(app.exec_())
 
