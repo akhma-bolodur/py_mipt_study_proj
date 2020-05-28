@@ -21,7 +21,6 @@ class Login(Form):
     switch_to_app = QtCore.pyqtSignal (int, int)
 
     def __init__(self, parent=None):
-        print("login constructor")
         super().__init__()
         
         self.ui = ui = FormUI()
@@ -33,7 +32,6 @@ class Login(Form):
         self.dbc = db.connect('my_db.s3db')
 
     def __del__(self):
-        print("login destructor")
         self.ui = None
         if self.dbc is not None:
             self.dbc.close ()
@@ -86,7 +84,7 @@ class Login(Form):
                     dk = hashlib.pbkdf2_hmac ('sha512', 
                             bytes (passw_text, 'utf-8'), salt, 100000)
                     if (dk  == result[0][1]):
-                        print ('Success auth')
+                        print ('Success auth with login ' + login_text)
                         status.setText ('<span style="color: green;">' + 
                                'Successfully auth</span>')
                     

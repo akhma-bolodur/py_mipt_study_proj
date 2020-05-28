@@ -22,7 +22,6 @@ class my_widget(Form):
 	switch_to_login = QtCore.pyqtSignal ()
 	
 	def __init__(self, course_num, school_num, parent=None):
-		print("constructor")
 		super().__init__()
 
 		self.ui = ui = FormUI()
@@ -48,7 +47,6 @@ class my_widget(Form):
 		self.access_err = ''
 
 	def __del__(self):
-		print("destructor")
 		self.ui = None
 		if self.dbc is not None:
 			self.dbc.close ()
@@ -135,7 +133,6 @@ class my_widget(Form):
 		query_result_list.scrollToItem(list_item)
 
 	def __show(self):
-		print("show")
 		# Initial query
 		query_text = 'SELECT * FROM ' + TABLENAME
 		# Query expansion
@@ -175,7 +172,6 @@ class my_widget(Form):
 		self.__make_list_widget_table(cur, result, error)
 
 	def __appoint_aid(self):
-		print("appoint")
 		# Getting summ of material aid
 		aid_summ = float(self.ui.aid_summ.text().replace(',', '.'))
 		# Making queries
@@ -191,26 +187,6 @@ class my_widget(Form):
 			error = str(exc)
 		# Display result or error
 		self.__show()
-		#self.__make_list_widget_table(cur, result, error)
-
-	def __show_all(self):
-		print("show all")
-		self.close()
-
-	def __show_not_all(self):
-		print("show not all")
 
 	def __exit (self):
 		self.switch_to_login.emit ()
-
-'''
-def main():
-	app = QApplication(sys.argv)
-	wid = my_widget(0, 0)
-	wid.show()
-	sys.exit(app.exec_())
-
-
-if __name__ == "__main__":
-	main()
-'''
