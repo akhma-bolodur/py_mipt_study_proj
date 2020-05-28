@@ -20,16 +20,63 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="3">
-    <widget class="QLineEdit" name="full_name"/>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="course_number"/>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="label_course_number">
+     <property name="text">
+      <string>Course number</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="label_school_number">
+     <property name="text">
+      <string>School number</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLineEdit" name="group_number"/>
+   </item>
+   <item row="0" column="3">
+    <widget class="QLabel" name="label_full_name">
+     <property name="text">
+      <string>Full name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="7">
+    <widget class="QListWidget" name="query_result_list"/>
+   </item>
+   <item row="2" column="4">
+    <widget class="QLabel" name="label_aid_summ">
+     <property name="text">
+      <string>Summ</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QLineEdit" name="full_name"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_group_number">
      <property name="text">
       <string>Group number</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="school_number"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLineEdit" name="department"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_department">
+     <property name="text">
+      <string>Department</string>
      </property>
     </widget>
    </item>
@@ -40,63 +87,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="label_course_number">
-     <property name="text">
-      <string>Course number</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QLineEdit" name="course_number"/>
-   </item>
-   <item row="1" column="6">
-    <widget class="QPushButton" name="button_show">
-     <property name="text">
-      <string>Show</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <widget class="QLabel" name="label_aid_summ">
-     <property name="text">
-      <string>Summ</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="7">
-    <widget class="QListWidget" name="query_result_list"/>
-   </item>
-   <item row="3" column="2">
-    <widget class="QLineEdit" name="school_number"/>
-   </item>
-   <item row="0" column="3">
-    <widget class="QLabel" name="label_full_name">
-     <property name="text">
-      <string>Full name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_department">
-     <property name="text">
-      <string>Department</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLineEdit" name="department"/>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="label_school_number">
-     <property name="text">
-      <string>School number</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="4">
-    <widget class="QDoubleSpinBox" name="aid_summ"/>
-   </item>
    <item row="2" column="3" rowspan="2">
     <widget class="QGroupBox" name="max_persons">
      <property name="title">
@@ -106,7 +96,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
+        <y>20</y>
         <width>44</width>
         <height>29</height>
        </rect>
@@ -119,7 +109,7 @@
       <property name="geometry">
        <rect>
         <x>70</x>
-        <y>30</y>
+        <y>20</y>
         <width>44</width>
         <height>29</height>
        </rect>
@@ -132,7 +122,7 @@
       <property name="geometry">
        <rect>
         <x>130</x>
-        <y>30</y>
+        <y>20</y>
         <width>51</width>
         <height>29</height>
        </rect>
@@ -141,6 +131,23 @@
        <string>100</string>
       </property>
      </widget>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QDoubleSpinBox" name="aid_summ"/>
+   </item>
+   <item row="1" column="6">
+    <widget class="QPushButton" name="button_show">
+     <property name="text">
+      <string>Show</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QPushButton" name="button_exit">
+     <property name="text">
+      <string>Exit</string>
+     </property>
     </widget>
    </item>
   </layout>

@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
+from PyQt5 import QtCore
 
 DB_PATH = 'my_db.s3db'
 TABLENAME = 'students'
@@ -17,6 +18,8 @@ TAXES = 0.13
 FormUI, Form = uic.loadUiType('mataid.ui')
 
 class my_widget(Form):
+
+	switch_to_login = QtCore.pyqtSignal ()
 	
 	def __init__(self, course_num, school_num, parent=None):
 		print("constructor")
@@ -26,9 +29,16 @@ class my_widget(Form):
 		ui.setupUi(self)
 		self.ui.button_show.clicked.connect(self.__show)
 		self.ui.button_appoint_aid.clicked.connect(self.__appoint_aid)
+		self.ui.button_exit.clicked.connect (self.__exit)
 		self.ui.aid_summ.setMaximum(100000.00)
 		self.ui.aid_summ.setMinimum(-100000.00)
 		self.setWindowTitle ('App')
+		if course_num > 0:
+			self.ui.course_number.setText (str (course_num))
+			self.ui.course_number.setReadOnly (True)
+		if school_num > 0:
+			self.ui.school_number.setText (str (school_num))
+			self.ui.school_number.setReadOnly (True)
 
 		self.max_persons1 = int(self.ui.persons_1.text())
 		self.max_persons2 = int(self.ui.persons_2.text())
@@ -123,6 +133,7 @@ class my_widget(Form):
 		list_item.setSizeHint(label_size_hint)
 		# Add item to output
 		query_result_list = self.ui.query_result_list
+		query_result_list.clear ()
 		query_result_list.addItem(list_item)
 		query_result_list.setItemWidget(list_item, label)
 		query_result_list.scrollToItem(list_item)
@@ -193,6 +204,8 @@ class my_widget(Form):
 	def __show_not_all(self):
 		print("show not all")
 
+	def __exit (self):
+		self.switch_to_login.emit ()
 
 def main():
 	app = QApplication(sys.argv)

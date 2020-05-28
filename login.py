@@ -115,8 +115,13 @@ class Control:
 
     def __app (self, c_num, s_num):
         self.app = my_widget (course_num = c_num, school_num = s_num)
+        self.app.switch_to_login.connect (self.__login)
         self.login.close ()
         self.app.show ()
+
+    def __login (self):
+        self.app.close ()
+        self._login ()
 
 def main():
     app = QApplication(sys.argv)
