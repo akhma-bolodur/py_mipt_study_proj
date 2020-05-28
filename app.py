@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
+from PyQt5 import QtCore
 
 DB_PATH = 'my_db.s3db'
 TABLENAME = 'students'
@@ -17,17 +18,28 @@ TAXES = 0.13
 FormUI, Form = uic.loadUiType('mataid.ui')
 
 class my_widget(Form):
+
+	switch_to_login = QtCore.pyqtSignal ()
 	
 	def __init__(self, course_num, school_num, parent=None):
-		print("constructor")
 		super().__init__()
+
 		self.ui = ui = FormUI()
 		ui.setupUi(self)
 		self.setWindowTitle("Material aid")
 		self.ui.button_show.clicked.connect(self.__show)
 		self.ui.button_appoint_aid.clicked.connect(self.__appoint_aid)
+		self.ui.button_exit.clicked.connect (self.__exit)
 		self.ui.aid_summ.setMaximum(100000.00)
 		self.ui.aid_summ.setMinimum(-100000.00)
+		self.setWindowTitle ('App')
+		if course_num > 0:
+			self.ui.course_number.setText (str (course_num))
+			self.ui.course_number.setReadOnly (True)
+		if school_num > 0:
+			self.ui.school_number.setText (str (school_num))
+			self.ui.school_number.setReadOnly (True)
+
 		self.max_persons1 = int(self.ui.persons_1.text())
 		self.max_persons2 = int(self.ui.persons_2.text())
 		self.dbc = db.connect('my_db.s3db')
@@ -36,7 +48,6 @@ class my_widget(Form):
 		self.access_err = ''
 
 	def __del__(self):
-		print("destructor")
 		self.ui = None
 		if self.dbc is not None:
 			self.dbc.close ()
@@ -49,7 +60,6 @@ class my_widget(Form):
 		full_name = self.ui.full_name.text().strip()
 		names = full_name.split(' ')
 
-		
 		if self.course_num > 0 or self.school_num > 0:
 			if self.course_num != int(course_number if course_number is not '' else '0'):
 				self.access_err = ('<span style="color: red;"><b>' + 
@@ -121,12 +131,12 @@ class my_widget(Form):
 		list_item.setSizeHint(label_size_hint)
 		# Add item to output
 		query_result_list = self.ui.query_result_list
+		query_result_list.clear ()
 		query_result_list.addItem(list_item)
 		query_result_list.setItemWidget(list_item, label)
 		query_result_list.scrollToItem(list_item)
 
 	def __show(self):
-		print("show")
 		# Initial query
 		query_text = 'SELECT * FROM ' + TABLENAME
 		# Query expansion
@@ -134,6 +144,7 @@ class my_widget(Form):
 		query_text += where_text + ' ORDER BY lastname ASC'
 		if self.access_err is not '':
 			self.__print_res (self.access_err)
+			self.access_err = ''
 			return
 
 		# Try to execute query
@@ -169,7 +180,6 @@ class my_widget(Form):
 		self.__make_list_widget_table(cur, result, error)
 
 	def __appoint_aid(self):
-		print("appoint")
 		# Getting summ of material aid
 		aid_summ = float(self.ui.aid_summ.text().replace(',', '.'))
 		# Making queries
@@ -194,6 +204,5 @@ def main():
 	wid.show()
 	sys.exit(app.exec_())
 
-
-if __name__ == "__main__":
-	main()
+def __exit (self):
+	self.switch_to_login.emit ()
