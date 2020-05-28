@@ -23,6 +23,7 @@ class my_widget(Form):
 		super().__init__()
 		self.ui = ui = FormUI()
 		ui.setupUi(self)
+		self.setWindowTitle("Material aid")
 		self.ui.button_show.clicked.connect(self.__show)
 		self.ui.button_appoint_aid.clicked.connect(self.__appoint_aid)
 		self.ui.aid_summ.setMaximum(100000.00)
@@ -54,13 +55,13 @@ class my_widget(Form):
 				self.access_err = ('<span style="color: red;"><b>' + 
 					f'Access denied: your course number is {self.course_num}' + 
 					'</b></span>')
-				print (self.access_err)
+				__print_res (self.access_err)
 				return ''
 			elif self.school_num != int(school_number if school_number is not '' else '0'):
 				self.access_err = ('<span style="color: red;"><b>' + 
 					f'Access denied: your school number is {self.school_num}' + 
 					'</b></span>')
-				print (self.access_err)
+				__print_res (self.access_err)
 				return ''
 		
 
@@ -74,18 +75,19 @@ class my_widget(Form):
 			['first_name', first_name],
 			['second_name', second_name]]
 
-		if functools.reduce(lambda a, b: a + b, query_parameters) != '':
+		if functools.reduce(lambda a, b: a + b, [param[1] for param in query_parameters]) != '':
 			text = ' WHERE'
+			params = []
 			for column_name, value in query_parameters:
 				if value != '':
-					c = ''
-					if column_name == 'lastname' or column_name == 'first_name' or column_name == 'second_name':
-						c = '"'
-					text += ' ' + column_name + ' = ' + c + f'{value}' + c + '  and'
+					text += ' ' + column_name + ' = ? and'
+					params.append(value)
 			text = text[:-len(' and')]
+			params = tuple(params)
 		else:
 			text = ''
-		return text
+			params = None
+		return text, params
 
 	def __make_list_widget_table(self, cur, result, error):
 		if error is None:
@@ -128,7 +130,8 @@ class my_widget(Form):
 		# Initial query
 		query_text = 'SELECT * FROM ' + TABLENAME
 		# Query expansion
-		query_text += self.__params_to_where() + ' ORDER BY lastname ASC'
+		where_text, params = self.__params_to_where()
+		query_text += where_text + ' ORDER BY lastname ASC'
 		if self.access_err is not '':
 			self.__print_res (self.access_err)
 			return
@@ -141,7 +144,10 @@ class my_widget(Form):
 				query_text += f' LIMIT {self.max_persons2}'
 
 			cur = self.dbc.cursor()
-			cur.execute(query_text)
+			if params != None:
+				cur.execute(query_text, params)
+			else:
+				cur.execute(query_text)
 			self.dbc.commit()
 			result = cur.fetchall()
 			max_persons = 100
@@ -180,13 +186,6 @@ class my_widget(Form):
 		# Display result or error
 		self.__show()
 		#self.__make_list_widget_table(cur, result, error)
-
-	def __show_all(self):
-		print("show all")
-		self.close()
-
-	def __show_not_all(self):
-		print("show not all")
 
 
 def main():
