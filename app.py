@@ -61,20 +61,16 @@ class my_widget(Form):
 		full_name = self.ui.full_name.text().strip()
 		names = full_name.split(' ')
 
-		# print (course_number, school_number)
 		if self.course_num > 0 or self.school_num > 0:
 			if self.course_num != int(course_number if course_number is not '' else '0'):
 				self.access_err = ('<span style="color: red;"><b>' + 
 					f'Access denied: your course number is {self.course_num}' + 
 					'</b></span>')
-				# print (self.access_err)
 				return ''
 			elif self.school_num != int(school_number if school_number is not '' else '0'):
-				# print (self.school_num, school_number if school_number is not '' else '0')
 				self.access_err = ('<span style="color: red;"><b>' + 
 					f'Access denied: your school number is {self.school_num}' + 
 					'</b></span>')
-				# print (self.access_err)
 				return ''
 		
 
@@ -207,6 +203,7 @@ class my_widget(Form):
 	def __exit (self):
 		self.switch_to_login.emit ()
 
+'''
 def main():
 	app = QApplication(sys.argv)
 	wid = my_widget(0, 0)
@@ -216,3 +213,4 @@ def main():
 
 if __name__ == "__main__":
 	main()
+'''

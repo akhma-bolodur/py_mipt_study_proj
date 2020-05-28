@@ -25,7 +25,6 @@ class Login(Form):
         super().__init__()
         
         self.ui = ui = FormUI()
-        # self.ui.setWindowTitle ('Authentification')
         ui.setupUi(self)
         ui.password.setEchoMode (QLineEdit.Password)
         ui.pushButton.clicked.connect (self.__authentificate)
@@ -91,9 +90,6 @@ class Login(Form):
                         status.setText ('<span style="color: green;">' + 
                                'Successfully auth</span>')
                     
-                        # self.wid = my_widget (course_num = result[0][3], 
-                        #                      school_num = result[0][4])
-                        # self.wid.show ()
                         self.switch_to_app.emit (result[0][3], result[0][4])
                         return
                     else:
