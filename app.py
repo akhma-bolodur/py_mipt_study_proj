@@ -106,14 +106,22 @@ class my_widget(Form):
 			elif cur.description is not None:
 				result_text = '<table border=1>'
 				result_text += '<tr>'
+				i = 0
+				summ_num = 0;
+				summ = 0.0
 				for column_name, *_ in cur.description:
+					i += 1
 					result_text += f'<td><b>{column_name}</b></td>'
+					if column_name == "current_full_sum":
+						summ_num = i;
 				result_text += '</tr>'
 				for row in result:
+					summ += row[summ_num - 1]
 					result_text += '<tr>'
 					result_text += ''.join('<td>%s</td>' % cell for cell in row)
 					result_text += '</tr>'
 				result_text += '</table>'
+				self.ui.label_value_total.setText (str (summ))
 			else:
 				return
 		else:
@@ -196,6 +204,9 @@ class my_widget(Form):
 		# Display result or error
 		self.__show()
 		#self.__make_list_widget_table(cur, result, error)
+
+	def __exit (self):
+		self.switch_to_login.emit ()
 
 
 def main():
